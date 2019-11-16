@@ -1,0 +1,27 @@
+{
+  "name": "learning",
+  "description": "My repository for learning algorithms and languages",
+  "homepage": "https://github.com/kobezzza/learning#readme",
+  "main": "index.js",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "kobezzza",
+    "email": "kobezzza@mail.ru",
+    "url": "https://github.com/kobezzza"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kobezzza/learning.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kobezzza/learning/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.6.0"
+  }
+}
