@@ -1,27 +1,73 @@
-import trainingSet from './training-set.js';
+export default class Classifier {
+	static tokenize(message) {
+		message = message.toLowerCase();
 
-function tokenize(message) {
-	message = message.toLowerCase();
+		const
+			words = message.match(/\p{L}+/gu);
 
-	const
-		words = message.match(/\p{L}+/gu);
-
-	return words ? [...new Set(words)] : [];
-}
-
-function countWords(trainingSet) {
-	const
-		dict = new Map();
-
-	for (const {message, spam} of trainingSet) {
-		for (const word of tokenize(message)) {
-			const obj = dict.get(word) || {spam: 0, notSpan: 0};
-			obj[spam ? 'spam' : 'notSpan']++;
-			dict.set(word, obj);
-		}
+		return words ? new Set(words) : new Set();
 	}
 
-	return dict;
-}
+	constructor(trainingSet, k = 0.5) {
+		this.initTrainingSet(trainingSet, k);
+	}
 
-console.log(countWords(trainingSet));
+	check(message) {
+		const
+			tokens = this.constructor.tokenize(message);
+
+		let
+			values = new Array(this.trainingLabels.length).fill(0);
+
+		for (const [word, clusters] of this.trainingSet.entries()) {
+			for (const [i, key] of [...clusters.keys()].entries()) {
+				const
+					val = clusters.get(key);
+
+				if (tokens.has(word)) {
+					values[i] += Math.log(val);
+
+				} else {
+					values[i] += Math.log(1 - val);
+				}
+			}
+		}
+
+		values = values.map(Math.exp);
+
+		return [...this.trainingLabels.entries()].reduce((map, [i, key]) => {
+			map[key] = values[i] / values.reduce((res, el) => res + el);
+			return map;
+		}, {});
+	}
+
+	initTrainingSet(data, k) {
+		this.trainingLabels = [...data.keys()];
+
+		const
+			trainingSet = new Map();
+
+		for (const [key, cluster] of data.entries()) {
+			for (const message of cluster) {
+				for (const word of this.constructor.tokenize(message)) {
+					const map = trainingSet.get(word) || this.trainingLabels.reduce(
+						(map, key) => map.set(key, 0),
+						new Map()
+					);
+
+					map.set(key, map.get(key) + 1);
+					trainingSet.set(word, map);
+				}
+			}
+		}
+
+		for (const [word, clusters] of trainingSet.entries()) {
+			trainingSet.set(word, this.trainingLabels.reduce(
+				(map, key) => map.set(key, (k + clusters.get(key)) / (2 * k + data.get(key).length)),
+				new Map()
+			));
+		}
+
+		this.trainingSet = trainingSet;
+	}
+}
