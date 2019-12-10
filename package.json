@@ -2,7 +2,7 @@
   "name": "learning",
   "description": "My repository for learning algorithms and languages",
   "homepage": "https://github.com/kobezzza/learning#readme",
-  "type":  "module",
+  "type": "module",
   "main": "index.js",
   "version": "1.0.0",
   "license": "MIT",
