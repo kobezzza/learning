@@ -39,6 +39,7 @@ Icon
 # Dependencies
 bower_components
 node_modules
+venv
 
 # Build && test
 /coverage
