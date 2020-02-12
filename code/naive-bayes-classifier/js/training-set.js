@@ -9,5 +9,7 @@ function addDocument(message, type) {
 	cluster.push(message);
 }
 
-addDocument('Hello world!', 'notSpam');
-addDocument('Hello viagra!', 'spam');
+addDocument('Hello viagra', 'spam');
+addDocument('viagra again', 'spam');
+addDocument('viagra strikes', 'spam');
+addDocument('Hello world', 'notSpam');

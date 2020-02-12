@@ -47,6 +47,11 @@ export default class Classifier {
 		const
 			trainingSet = new Map();
 
+		const total = this.trainingLabels.reduce(
+			(map, key) => map.set(key, 0),
+			new Map()
+		);
+
 		for (const [key, cluster] of data.entries()) {
 			for (const message of cluster) {
 				for (const word of this.constructor.tokenize(message)) {
@@ -56,6 +61,7 @@ export default class Classifier {
 					);
 
 					map.set(key, map.get(key) + 1);
+					total.set(key, total.get(key) + 1);
 					trainingSet.set(word, map);
 				}
 			}
@@ -63,7 +69,7 @@ export default class Classifier {
 
 		for (const [word, clusters] of trainingSet.entries()) {
 			trainingSet.set(word, this.trainingLabels.reduce(
-				(map, key) => map.set(key, (k + clusters.get(key)) / (2 * k + data.get(key).length)),
+				(map, key) => map.set(key, (k + clusters.get(key)) / (2 * k + total.get(key))),
 				new Map()
 			));
 		}
