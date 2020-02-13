@@ -53,7 +53,7 @@ class Classifier:
 
         self.training_set = training_set
 
-    def check(self, msg: str):
+    def check(self, msg: str) -> dict:
         """
         Checks the specified message with a training set and returns a dictionary with probabilities
         :param msg:
