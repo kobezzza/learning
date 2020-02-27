@@ -44,6 +44,8 @@ venv
 # Build && test
 /coverage
 /predefs/build
+*.exe
+*.pdb
 
 # Log
 *.log
