@@ -16,7 +16,7 @@ class Classifier:
 
     def tokenize(self, msg: str) -> set:
         """
-        Finds from the specified message all words and returns a set object with their words
+        Finds all words from the specified message and returns a set object with their words
         :param msg:
         :return:
         """
@@ -72,9 +72,10 @@ class Classifier:
                     values[i] += math.log(1 - clusters[key])
 
         values = list(map(math.exp, values))
+        sum_of_values = sum(values)
         result = dict()
 
         for i, key in enumerate(self.training_labels):
-            result[key] = values[i] / sum(values)
+            result[key] = values[i] / sum_of_values
 
         return result

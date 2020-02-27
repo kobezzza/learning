@@ -12,35 +12,6 @@ export default class Classifier {
 		this.initTrainingSet(trainingSet, k);
 	}
 
-	check(message) {
-		const
-			tokens = this.constructor.tokenize(message);
-
-		let
-			values = new Array(this.trainingLabels.length).fill(0);
-
-		for (const [word, clusters] of this.trainingSet.entries()) {
-			for (const [i, key] of [...clusters.keys()].entries()) {
-				const
-					val = clusters.get(key);
-
-				if (tokens.has(word)) {
-					values[i] += Math.log(val);
-
-				} else {
-					values[i] += Math.log(1 - val);
-				}
-			}
-		}
-
-		values = values.map(Math.exp);
-
-		return [...this.trainingLabels.entries()].reduce((map, [i, key]) => {
-			map[key] = values[i] / values.reduce((res, el) => res + el);
-			return map;
-		}, {});
-	}
-
 	initTrainingSet(data, k) {
 		this.trainingLabels = [...data.keys()];
 
@@ -75,5 +46,37 @@ export default class Classifier {
 		}
 
 		this.trainingSet = trainingSet;
+	}
+
+	check(message) {
+		const
+			tokens = this.constructor.tokenize(message);
+
+		let
+			values = new Array(this.trainingLabels.length).fill(0);
+
+		for (const [word, clusters] of this.trainingSet.entries()) {
+			for (const [i, key] of [...clusters.keys()].entries()) {
+				const
+					val = clusters.get(key);
+
+				if (tokens.has(word)) {
+					values[i] += Math.log(val);
+
+				} else {
+					values[i] += Math.log(1 - val);
+				}
+			}
+		}
+
+		values = values.map(Math.exp);
+
+		const
+			sumOfValues = values.reduce((res, el) => res + el);
+
+		return [...this.trainingLabels.entries()].reduce((map, [i, key]) => {
+			map[key] = values[i] / sumOfValues;
+			return map;
+		}, {});
 	}
 }
